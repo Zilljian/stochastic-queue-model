@@ -6,3 +6,4 @@
 gradlew
 queue_metrics.csv
 gradlew.bat
+gradle/
