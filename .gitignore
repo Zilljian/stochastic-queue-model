@@ -1,0 +1,8 @@
+# Project exclude paths
+/.gradle/
+/build/
+/build/classes/java/main/
+.idea/
+gradlew
+queue_metrics.csv
+gradlew.bat
