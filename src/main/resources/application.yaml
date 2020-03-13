@@ -1,14 +1,13 @@
 metrics:
   location:
-    client: src/main/resources/metrics/client_metrics.csv
     queue: src/main/resources/metrics/queue_metrics.csv
 application:
   execution:
-    count-client-emitted: 500
-    count-client-processed: 500
+    count-client-emitted:
+    count-client-processed:
     time-seconds:
 model:
   parameter:
-    mu: 9
+    mu: 3
     lambda: 10
-    queue-depth: 10
+    queue-depth: 2
