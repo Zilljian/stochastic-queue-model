@@ -7,3 +7,4 @@ gradlew
 queue_metrics.csv
 gradlew.bat
 gradle/
+src/main/resources/metrics/*

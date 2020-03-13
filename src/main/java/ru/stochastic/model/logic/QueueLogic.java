@@ -1,25 +1,35 @@
+package ru.stochastic.model.logic;
+
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import ru.stochastic.model.model.Client;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
+@Slf4j
 @Getter
-public class Logic {
+public class QueueLogic {
 
-    private final static Logger log = Logger.getLogger("Process");
     private final Queue<Client> queue;
-    private AtomicLong inQueueCounter = new AtomicLong(0);
+    private final List<Client> processedClients = new ArrayList<>();
+    private final AtomicLong inQueueCounter = new AtomicLong(0);
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
+
     private long successPushedClientCounter = 0;
     private long rejectedClientCounter = 0;
 
-    public Logic(int maxQueueDepth) {
+    public QueueLogic(int maxQueueDepth) {
         this.queue = new ArrayBlockingQueue<>(maxQueueDepth);
     }
 
@@ -30,7 +40,8 @@ public class Logic {
         }
         inQueueCounter.getAndDecrement();
         client.latchProcess();
-        log.info(format("Time: %s Client has left the queue, id = %s",
+        executorService.submit(client::writeStatistics);
+        log.info(format("Time: %s model.Client has left the queue, id = %s",
                 LocalTime.now().truncatedTo(ChronoUnit.SECONDS),
                 client.getId()));
     }
