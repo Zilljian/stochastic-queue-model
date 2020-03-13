@@ -21,6 +21,6 @@ public class ExecutorServiceConfiguration {
         scheduler.scheduleWithFixedDelay(clientEmitter, 1, 10, TimeUnit.MILLISECONDS);
         scheduler.scheduleWithFixedDelay(processExecutor, 1, 10, TimeUnit.MILLISECONDS);
         scheduler.scheduleWithFixedDelay(logScheduledTask, 1, 1, TimeUnit.SECONDS);
-        return Executors.newScheduledThreadPool(3);
+        return scheduler;
     }
 }

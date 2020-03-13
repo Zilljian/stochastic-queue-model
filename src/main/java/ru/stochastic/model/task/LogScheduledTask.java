@@ -19,17 +19,16 @@ public class LogScheduledTask extends Thread {
     private Long COUNT;
     @Value("${metrics.location.queue}")
     private String FILE_OUTPUT;
-    private final QueueLogic logic;
-    private final String[] HEADERS = {"second", "success", "rejected", "current_size"};
 
     private static int executionCounter = 0;
-    private FileWriter out;
+    private final QueueLogic logic;
+    private final String[] HEADERS = {"second", "success", "rejected", "current_size"};
     private long second = 0;
 
     @SneakyThrows
     @PostConstruct
     private void clearOutput() {
-        out = new FileWriter(FILE_OUTPUT, false);
+        var out = new FileWriter(FILE_OUTPUT, false);
         try (var ignored = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(HEADERS))) {
         }
     }
@@ -40,7 +39,7 @@ public class LogScheduledTask extends Thread {
         if (nonNull(COUNT) && executionCounter++ == COUNT) {
             System.exit(0);
         }
-        out = new FileWriter(FILE_OUTPUT, true);
+        var out = new FileWriter(FILE_OUTPUT, true);
         try (var printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
             printer.printRecord(
                     ++second,

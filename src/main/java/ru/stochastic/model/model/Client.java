@@ -6,10 +6,11 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -19,25 +20,22 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class Client {
 
-    private static final String METRICS_FILE = "src/main/resources/metrics/client_metrics.csv";
+    @Value("${metrics.location.client}")
+    private String FILE_OUTPUT;
+
     private static long idGenerator;
     private final long id;
+    private final String[] HEADERS = {"id", "queue_time", "process_time"};
     private final LocalDateTime emitted;
+
     private LocalDateTime queueEnd;
     private LocalDateTime processEnd;
 
-    static {
-        FileWriter out = null;
-        try {
-            out = new FileWriter(METRICS_FILE, false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try (var ignored = new CSVPrinter(
-                out, CSVFormat.DEFAULT
-                .withIgnoreEmptyLines()
-                .withHeader("id", "queue_time", "process_time"))) {
-        } catch (IOException e) {
+    @SneakyThrows
+    @PostConstruct
+    private void clearOutput() {
+        var out = new FileWriter(FILE_OUTPUT, false);
+        try (var ignored = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(HEADERS))) {
         }
     }
 
@@ -64,7 +62,7 @@ public class Client {
 
     @SneakyThrows
     public void writeStatistics() {
-        var out = new FileWriter(METRICS_FILE, true);
+        var out = new FileWriter(FILE_OUTPUT, true);
         try (var printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
             printer.printRecord(
                     id,

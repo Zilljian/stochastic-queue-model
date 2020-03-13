@@ -1,5 +1,6 @@
 metrics:
   location:
+    client: src/main/resources/metrics/client_metrics.csv
     queue: src/main/resources/metrics/queue_metrics.csv
 application:
   execution:
