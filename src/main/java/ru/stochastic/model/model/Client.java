@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -20,14 +19,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class Client {
 
-    @Value("${metrics.location.client}")
-    private String FILE_OUTPUT;
-
+    private static final String FILE_OUTPUT = "src/main/resources/metrics/client_metrics.csv";
     private static long idGenerator;
     private final long id;
     private final String[] HEADERS = {"id", "queue_time", "process_time"};
     private final LocalDateTime emitted;
-
     private LocalDateTime queueEnd;
     private LocalDateTime processEnd;
 
@@ -37,6 +33,7 @@ public class Client {
         var out = new FileWriter(FILE_OUTPUT, false);
         try (var ignored = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(HEADERS))) {
         }
+        out.close();
     }
 
     public Client() {
@@ -70,5 +67,6 @@ public class Client {
                     (double) getTimeInProcess().getNano() / 1000000.0
             );
         }
+        out.close();
     }
 }

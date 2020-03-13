@@ -31,6 +31,7 @@ public class LogScheduledTask extends Thread {
         var out = new FileWriter(FILE_OUTPUT, false);
         try (var ignored = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(HEADERS))) {
         }
+        out.close();
     }
 
     @Override
