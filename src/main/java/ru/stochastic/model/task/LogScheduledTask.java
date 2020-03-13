@@ -28,10 +28,10 @@ public class LogScheduledTask extends Thread {
     @SneakyThrows
     @PostConstruct
     private void clearOutput() {
-        var out = new FileWriter(FILE_OUTPUT, false);
-        try (var ignored = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(HEADERS))) {
+        try (var out = new FileWriter(FILE_OUTPUT, false)) {
+            try (var ignored = new CSVPrinter(out, CSVFormat.DEFAULT.withHeader(HEADERS))) {
+            }
         }
-        out.close();
     }
 
     @Override
@@ -40,15 +40,15 @@ public class LogScheduledTask extends Thread {
         if (nonNull(COUNT) && executionCounter++ == COUNT) {
             System.exit(0);
         }
-        var out = new FileWriter(FILE_OUTPUT, true);
-        try (var printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
-            printer.printRecord(
-                    ++second,
-                    logic.getSuccessPushedClientCounter(),
-                    logic.getRejectedClientCounter(),
-                    logic.getInQueueCounter().get()
-            );
+        try (var out = new FileWriter(FILE_OUTPUT, true)) {
+            try (var printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
+                printer.printRecord(
+                        ++second,
+                        logic.getSuccessPushedClientCounter(),
+                        logic.getRejectedClientCounter(),
+                        logic.getInQueueCounter().get()
+                );
+            }
         }
-        out.close();
     }
 }
